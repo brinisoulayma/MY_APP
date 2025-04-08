@@ -30,7 +30,7 @@ Page {
             font.pixelSize: 16
             
             Image {
-                source: "qrc:/resources/icons/user-icon.png"
+                source: "qrc:/icons/user-icon.png"
                 anchors { 
                     left: parent.left
                     verticalCenter: parent.verticalCenter
@@ -43,9 +43,9 @@ Page {
 
         // Security Questions
         Label {
-            text: securityQuestions.question1
+            id: question1Label
+            text: mainController.auth_controller.get_question1(usernameField.text)
             visible: usernameField.text !== ""
-            font.family: "Roboto"
         }
 
         TextField {
@@ -56,9 +56,9 @@ Page {
         }
 
         Label {
-            text: securityQuestions.question2
+            id: question2Label
+            text: mainController.auth_controller.get_question2(usernameField.text)
             visible: usernameField.text !== ""
-            font.family: "Roboto"
         }
 
         TextField {
@@ -76,7 +76,7 @@ Page {
             font.pixelSize: 16
             
             Image {
-                source: "qrc:/resources/icons/lock.png"
+                source: "qrc:/icons/lock.png"
                 anchors { 
                     left: parent.left
                     verticalCenter: parent.verticalCenter
@@ -85,7 +85,11 @@ Page {
                 width: 24
                 height: 24
             }
+
+            // Visibility Toggle Button
         }
+
+
 
         // Reset Button
         Button {

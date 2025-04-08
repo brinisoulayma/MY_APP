@@ -15,8 +15,8 @@ Page {
         Image {
             source: "qrc:/images/logo.png" 
             Layout.alignment: Qt.AlignHCenter
-            Layout.preferredWidth: 180
-            Layout.preferredHeight: 180
+            Layout.preferredWidth: 200
+            Layout.preferredHeight: 200
             fillMode: Image.PreserveAspectFit
         }
 
@@ -27,10 +27,21 @@ Page {
             Layout.fillWidth: true
             leftPadding: 40
             font.pixelSize: 16
+
+            Image {
+                source: "qrc:/icons/user-icon.png"
+                anchors { 
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    margins: 12
+                }
+                width: 24
+                height: 24
+            }            
+
         }
 
         // Password Field with Visibility Toggle
-    
         PasswordField {
             id: passwordField
             Layout.fillWidth: true
@@ -38,7 +49,7 @@ Page {
             font.pixelSize: 16
             
             Image {
-                source: "qrc:/resources/icons/lock.png"
+                source: "qrc:/icons/lock.png"
                 anchors { 
                     left: parent.left
                     verticalCenter: parent.verticalCenter

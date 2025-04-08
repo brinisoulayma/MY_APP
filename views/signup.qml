@@ -61,12 +61,12 @@ Page {
 
             // Password validation logic
             onTextChanged: {
-                var valid = mainController.auth_controller.validatePassword(text)
-                upperCondition.color = valid.upper ? "green" : "red"
-                lowerCondition.color = valid.lower ? "green" : "red"
-                numberCondition.color = valid.number ? "green" : "red"
-                specialCondition.color = valid.special ? "green" : "red"
-                lengthCondition.color = valid.length ? "green" : "red"
+                var validation = mainController.auth_controller.validate_password(text)
+                lengthCondition.color = validation.length ? "green" : "red"
+                upperCondition.color = validation.upper ? "green" : "red"
+                lowerCondition.color = validation.lower ? "green" : "red"
+                numberCondition.color = validation.number ? "green" : "red"
+                specialCondition.color = validation.special ? "green" : "red"
             }
         }
 
@@ -75,11 +75,31 @@ Page {
             spacing: 4
             Layout.alignment: Qt.AlignLeft
 
-            Text { id: lengthCondition; text: "✓ 8+ characters"; color: "red" }
-            Text { id: upperCondition; text: "✓ Uppercase letter"; color: "red" }
-            Text { id: lowerCondition; text: "✓ Lowercase letter"; color: "red" }
-            Text { id: numberCondition; text: "✓ Number"; color: "red" }
-            Text { id: specialCondition; text: "✓ Special character"; color: "red" }
+            Text { 
+                id: lengthCondition
+                text: "✓ 8+ characters"
+                color: "red"
+            }
+            Text { 
+                id: upperCondition
+                text: "✓ Uppercase letter"
+                color: "red"
+            }
+            Text { 
+                id: lowerCondition
+                text: "✓ Lowercase letter"
+                color: "red"
+            }
+            Text { 
+                id: numberCondition
+                text: "✓ Number"
+                color: "red"
+            }
+            Text { 
+                id: specialCondition
+                text: "✓ Special character"
+                color: "red"
+            }
         }
 
         // Security Questions

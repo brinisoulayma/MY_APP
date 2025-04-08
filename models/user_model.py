@@ -5,6 +5,12 @@ class UserModel:
         self.db = Database()
         self._create_table()
 
+    def get_user(self, username):
+        return self.db.fetch_one(
+            "SELECT * FROM users WHERE username = ?",
+            (username,)
+        )
+
     def _create_table(self):
         query = '''CREATE TABLE IF NOT EXISTS users (
             username TEXT PRIMARY KEY,

@@ -4,3 +4,4 @@ __pycache__/
 *.qrc
 *.db
 resources_rc.py
+.qodo

@@ -7,10 +7,13 @@
     <file alias="fonts/Roboto-Regular.ttf">assets/fonts/Roboto/Roboto-Regular.ttf</file>
     
     <!-- Icons -->
-    <file alias="icons/eye-closed.png">assets/icons/eye_hidden.svg</file>
-    <file alias="icons/eye-open.png">assets/icons/eye_visible.svg</file>
     <file alias="icons/lock.png">assets/icons/lock.png</file>
     <file alias="icons/user-icon.png">assets/icons/user-icon.png</file>
+    <file alias="icons/back-arrow.png">assets/icons/back-arrow.png</file>
+    <file alias="icons/envelope.png">assets/icons/envelope.png</file>
+    <file alias="icons/eye-closed.png">assets\icons\eye-closed.png</file>
+    <file alias="icons/eye-open.png">assets\icons\eye-open.png</file>
+    
     
     <!-- Images -->
     <file alias="images/logo.png">assets/images/logo.png</file>
