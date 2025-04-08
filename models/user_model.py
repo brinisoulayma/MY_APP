@@ -1,35 +1,35 @@
-# models/user_model.py
-from .database import get_db_connection
+from Models.database import Database
 
 class UserModel:
-    @staticmethod
-    def create_user(username, password, email):
-        conn = get_db_connection()
-        cursor = conn.cursor()
+    def __init__(self):
+        self.db = Database()
+        self._create_table()
+
+    def _create_table(self):
+        query = '''CREATE TABLE IF NOT EXISTS users (
+            username TEXT PRIMARY KEY,
+            password TEXT NOT NULL,
+            question1 TEXT,
+            answer1 TEXT,
+            question2 TEXT,
+            answer2 TEXT
+        )'''
+        self.db.execute(query)
+
+    def create_user(self, username, password, q1, a1, q2, a2):
         try:
-            cursor.execute('INSERT INTO users (username, password, email) VALUES (?, ?, ?)', 
-                          (username, password, email))
-            conn.commit()
+            self.db.execute('''INSERT INTO users VALUES (?,?,?,?,?,?)''',
+                           (username, password, q1, a1, q2, a2))
             return True
-        except sqlite3.IntegrityError:
-            return False  # Username or email already exists
-        finally:
-            conn.close()
+        except Exception as e:
+            print(f"DB Error: {str(e)}")
+            return False
 
-    @staticmethod
-    def get_user_by_username(username):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
-        user = cursor.fetchone()
-        conn.close()
-        return user
+    def user_exists(self, username):
+        return bool(self.db.fetch_one("SELECT 1 FROM users WHERE username=?", (username,)))
 
-    @staticmethod
-    def update_password(username, new_password):
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute('UPDATE users SET password = ? WHERE username = ?', 
-                      (new_password, username))
-        conn.commit()
-        conn.close()
+    def verify_user(self, username, password):
+        return bool(self.db.fetch_one(
+            "SELECT 1 FROM users WHERE username=? AND password=?",
+            (username, password)
+        ))

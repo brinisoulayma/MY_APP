@@ -1,9 +1,18 @@
+<!DOCTYPE RCC>
 <RCC>
-    <qresource prefix="/">
-        <file>resources/icons/envelope.png</file>
-        <file>resources/icons/eye-closed.png</file>
-        <file>resources/icons/eye-open.png</file>
-        <file>resources/icons/lock.png</file>
-        <file>resources/icons/user-icon.png</file>
-    </qresource>
+  <qresource prefix="/">
+    <!-- Fonts -->
+    <file alias="fonts/Roboto-Bold.ttf">assets/fonts/Roboto/Roboto-Bold.ttf</file>
+    <file alias="fonts/Roboto-Medium.ttf">assets/fonts/Roboto/Roboto-Medium.ttf</file>
+    <file alias="fonts/Roboto-Regular.ttf">assets/fonts/Roboto/Roboto-Regular.ttf</file>
+    
+    <!-- Icons -->
+    <file alias="icons/eye-closed.png">assets/icons/eye_hidden.svg</file>
+    <file alias="icons/eye-open.png">assets/icons/eye_visible.svg</file>
+    <file alias="icons/lock.png">assets/icons/lock.png</file>
+    <file alias="icons/user-icon.png">assets/icons/user-icon.png</file>
+    
+    <!-- Images -->
+    <file alias="images/logo.png">assets/images/logo.png</file>
+  </qresource>
 </RCC>

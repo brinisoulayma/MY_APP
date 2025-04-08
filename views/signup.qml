@@ -3,148 +3,152 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls.Material 2.15
 
-ApplicationWindow {
-    id: signupWindow
-    visible: true
-    width: 400
-    height: 600
-    title: "Sign Language Converter - Sign Up"
-    
-    Material.theme: Material.Dark
-    Material.accent: Material.Purple
-    
-    Rectangle {
-        anchors.fill: parent
-        color: "#121212"  // Dark background
-        
-        Text {
-            id: signupTitle
-            text: "Create an Account"
-            color: "#FFFFFF"
-            font.pixelSize: 24
-            font.bold: true
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 50
-        }
-        
-        Column {
-            anchors.top: signupTitle.bottom
-            anchors.topMargin: 40
-            anchors.horizontalCenter: parent.horizontalCenter
-            spacing: 15
-            width: parent.width * 0.8
-            
-            RowLayout {
-                width: parent.width
-                
-                Image {
-                    source: "qrc:/resources/icons/user-icon.png"
-                    Layout.preferredWidth: 24
-                    Layout.preferredHeight: 24
-                }
-                
-                StyledTextField {
-                    id: usernameField
-                    placeholderText: "Username"
-                    Layout.fillWidth: true
-                }
-            }
-            
-            RowLayout {
-                width: parent.width
-                
-                Image {
-                    source: "qrc:/resources/icons/envelope.png"
-                    Layout.preferredWidth: 24
-                    Layout.preferredHeight: 24
-                }
-                
-                StyledTextField {
-                    id: emailField
-                    placeholderText: "Email"
-                    Layout.fillWidth: true
-                    inputMethodHints: Qt.ImhEmailCharactersOnly
-                }
-            }
-            
-            RowLayout {
-                width: parent.width
-                
-                Image {
-                    source: "qrc:/resources/icons/lock.png" 
-                    Layout.preferredWidth: 24
-                    Layout.preferredHeight: 24
-                }
-                
-                PasswordField {
-                    id: passwordField
-                    placeholderText: "Password"
-                    Layout.fillWidth: true
-                }
-            }
-            
-            RowLayout {
-                width: parent.width
-                
-                Image {
-                    source: "qrc:/resources/icons/lock.png" 
-                    Layout.preferredWidth: 24
-                    Layout.preferredHeight: 24
-                }
-                
-                PasswordField {
-                    id: confirmPasswordField
-                    placeholderText: "Confirm Password"
-                    Layout.fillWidth: true
-                }
-            }
-            
-            StyledButton {
-                text: "Sign Up"
-                width: parent.width
-                onClicked: {
-                    if (passwordField.text !== confirmPasswordField.text) {
-                        errorLabel.text = "Passwords do not match"
-                    } else {
-                        authController.signup(usernameField.text, passwordField.text, emailField.text)
-                    }
-                }
-            }
-            
-            Text {
-                text: "Already have an account?"
-                color: "#CCCCCC"
-                font.pixelSize: 14
-                anchors.horizontalCenter: parent.horizontalCenter
-            }
-            
-            StyledButton {
-                text: "Back to Login"
-                width: parent.width
-                onClicked: mainController.show_login()
-            }
-        }
-        
-        // Error message
+Page {
+    padding: 24
+
+    ColumnLayout {
+        anchors.centerIn: parent
+        width: Math.min(parent.width * 0.9, 400)
+        spacing: 16
+
         Label {
-            id: errorLabel
-            color: "#FF5252"
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 20
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: 14
+            text: "Create Account"
+            font {
+                pixelSize: 24
+                bold: true
+                family: "Roboto"
+            }
+            Layout.alignment: Qt.AlignHCenter
+        }
+
+        // Username
+        TextField {
+            id: usernameField
+            placeholderText: "Choose Username"
+            Layout.fillWidth: true
+            leftPadding: 48
+            font.pixelSize: 16
+            
+            Image {
+                source: "qrc:/icons/user-icon.png"
+                anchors { 
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    margins: 12
+                }
+                width: 24
+                height: 24
+            }
+        }
+
+        // Password
+        PasswordField {
+            id: passwordField
+            Layout.fillWidth: true
+            leftPadding: 48
+            font.pixelSize: 16
+            
+            Image {
+                source: "qrc:/icons/lock.png"
+                anchors { 
+                    left: parent.left
+                    verticalCenter: parent.verticalCenter
+                    margins: 12
+                }
+                width: 24
+                height: 24
+            }
+
+            // Password validation logic
+            onTextChanged: {
+                var valid = mainController.auth_controller.validatePassword(text)
+                upperCondition.color = valid.upper ? "green" : "red"
+                lowerCondition.color = valid.lower ? "green" : "red"
+                numberCondition.color = valid.number ? "green" : "red"
+                specialCondition.color = valid.special ? "green" : "red"
+                lengthCondition.color = valid.length ? "green" : "red"
+            }
+        }
+
+        // Password Strength Indicators
+        ColumnLayout {
+            spacing: 4
+            Layout.alignment: Qt.AlignLeft
+
+            Text { id: lengthCondition; text: "✓ 8+ characters"; color: "red" }
+            Text { id: upperCondition; text: "✓ Uppercase letter"; color: "red" }
+            Text { id: lowerCondition; text: "✓ Lowercase letter"; color: "red" }
+            Text { id: numberCondition; text: "✓ Number"; color: "red" }
+            Text { id: specialCondition; text: "✓ Special character"; color: "red" }
+        }
+
+        // Security Questions
+        ComboBox {
+            id: securityQuestion1
+            Layout.fillWidth: true
+            model: [
+                "What city were you born in?",
+                "What's your mother's maiden name?",
+                "What was your first pet's name?"
+            ]
+            font.family: "Roboto"
+        }
+
+        TextField {
+            id: answer1
+            placeholderText: "Answer 1"
+            Layout.fillWidth: true
+            font.family: "Roboto"
+        }
+
+        ComboBox {
+            id: securityQuestion2
+            Layout.fillWidth: true
+            model: [
+                "What's your favorite movie?",
+                "What school did you first attend?",
+                "What's your childhood nickname?"
+            ]
+            font.family: "Roboto"
+        }
+
+        TextField {
+            id: answer2
+            placeholderText: "Answer 2"
+            Layout.fillWidth: true
+            font.family: "Roboto"
+        }
+
+        // Create Account Button
+        Button {
+            text: "Create Account"
+            Layout.fillWidth: true
+            Material.background: Material.primary
+            Material.foreground: "white"
+            font {
+                bold: true
+                family: "Roboto"
+            }
+            onClicked: mainController.auth_controller.signup(
+                usernameField.text,
+                passwordField.text,
+                securityQuestion1.currentText,
+                answer1.text,
+                securityQuestion2.currentText,
+                answer2.text
+            )
+        }
+
+        // Back Navigation
+        Button {
+            text: "← Back to Login"
+            Layout.alignment: Qt.AlignLeft
+            flat: true
+            font.family: "Roboto"
+            onClicked: stackView.pop()
         }
     }
-    
-    // Connections to handle signup success/failure
-    Connections {
-        target: authController
-        function onSignupSuccess() {
-            mainController.show_login()
-        }
-        function onSignupFailure(message) {
-            errorLabel.text = message
-        }
-    }
+
+    ErrorPopup { id: errorPopup }
+    SuccessPopup { id: successPopup }
 }

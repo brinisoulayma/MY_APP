@@ -1,20 +1,38 @@
-from PySide6.QtGui import QGuiApplication
-from PySide6.QtQml import QQmlApplicationEngine
-# Import your controller classes
-from controllers.main_controller import MainController
-from controllers.auth_controller import AuthController
+import sys
+import os
+import my_app_rc 
+from pathlib import Path
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtQml import QQmlApplicationEngine
+from PyQt5.QtCore import QUrl
+from Controllers.main_controller import MainController
 
-app = QGuiApplication([])
-engine = QQmlApplicationEngine()
+def handle_qml_errors(errors):
+    for error in errors:
+        print(f"QML Error: {error.toString()}")
 
-# Instantiate controllers
-main_controller = MainController(engine)
-auth_controller = AuthController()
-
-# Set context properties
-engine.rootContext().setContextProperty("mainController", main_controller)
-engine.rootContext().setContextProperty("authController", auth_controller)
-
-# Load the initial QML file
-engine.load("views/login.qml")
-app.exec()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    
+    # Configure engine
+    engine = QQmlApplicationEngine()
+    root_path = Path(__file__).parent
+    
+    # Set Material Design configuration
+    os.environ["QT_QUICK_CONTROLS_CONF"] = str(root_path / "qtquickcontrols2.conf")
+    
+    # Register controller
+    main_controller = MainController()
+    engine.rootContext().setContextProperty("mainController", main_controller)
+    
+    # Set import paths
+    engine.addImportPath(str(root_path / "Views"))
+    engine.addImportPath(str(root_path / "resources"))
+    
+    # Load main QML
+    engine.load(QUrl.fromLocalFile(str(root_path / "Views" / "Main.qml")))
+    
+    if not engine.rootObjects():
+        sys.exit(-1)
+    
+    sys.exit(app.exec_())

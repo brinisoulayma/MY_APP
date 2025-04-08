@@ -1,24 +1,24 @@
-# models/database.py
 import sqlite3
-import os
+from pathlib import Path
 
-DATABASE_PATH = os.path.join(os.path.dirname(__file__), '../data/app.db')
-
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
-    return conn
-
-def init_db():
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            email TEXT UNIQUE NOT NULL
-        )
-    ''')
-    conn.commit()
-    conn.close()
+class Database:
+    _instance = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            db_path = Path(__file__).parent.parent / "data" / "app.db"
+            cls._instance.conn = sqlite3.connect(db_path)
+            cls._instance.cursor = cls._instance.conn.cursor()
+        return cls._instance
+    
+    def execute(self, query, params=()):
+        self.cursor.execute(query, params)
+        self.conn.commit()
+    
+    def fetch_one(self, query, params=()):
+        self.cursor.execute(query, params)
+        return self.cursor.fetchone()
+    
+    def __del__(self):
+        self.conn.close()
