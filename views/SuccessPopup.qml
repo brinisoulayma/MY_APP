@@ -11,20 +11,29 @@ Popup {
 
     // Existing properties and content of the successPopup
     Label {
+        id: messageLabel
         text: "Operation successful!"
         anchors.centerIn: parent
         font.pixelSize: 18
         font.bold: true
     }
 
+    // Timer for auto-closing the popup
     Timer {
+        id: autoCloseTimer
         interval: 2000
-        running: successPopup.visible
         onTriggered: {
-            successPopup.close()
-            if (message === "Account created successfully!") {
+            parent.close()
+            if (messageLabel.text === "Account created successfully!") {
                 stackView.pop()
             }
         }
+    }
+
+    // Function to show the popup with a message
+    function show(text) {
+        messageLabel.text = text
+        open()
+        autoCloseTimer.start()
     }
 }

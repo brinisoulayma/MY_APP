@@ -1,22 +1,18 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.15
 
 Page {
-    property string username  // Must match passed property name
-
-    ColumnLayout {
+    property string username: ""
+    
+    Label {
         anchors.centerIn: parent
-        spacing: 20
+        text: "Welcome, " + username + "!"
+        font.pixelSize: 20
+    }
 
-        Text {
-            text: "Welcome, " + username + "!"
-            font.pixelSize: 24
-        }
-
-        Button {
-            text: "Log Out"
-            onClicked: stackView.pop()
-        }
+    // Add session initialization logic here
+    Component.onCompleted: {
+        // Initialize user session
+        mainController.auth.initializeSession(username)
     }
 }

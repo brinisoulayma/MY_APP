@@ -44,7 +44,7 @@ Page {
         // Security Questions
         Label {
             id: question1Label
-            text: mainController.auth_controller.get_question1(usernameField.text)
+            text: authController.get_question1(usernameField.text)
             visible: usernameField.text !== ""
         }
 
@@ -57,7 +57,7 @@ Page {
 
         Label {
             id: question2Label
-            text: mainController.auth_controller.get_question2(usernameField.text)
+            text: authController.get_question2(usernameField.text)
             visible: usernameField.text !== ""
         }
 
@@ -85,11 +85,7 @@ Page {
                 width: 24
                 height: 24
             }
-
-            // Visibility Toggle Button
         }
-
-
 
         // Reset Button
         Button {
@@ -101,12 +97,27 @@ Page {
                 bold: true
                 family: "Roboto"
             }
-            onClicked: mainController.auth_controller.reset_password(
-                usernameField.text,
-                newPassword.text,
-                answer1.text,
-                answer2.text
-            )
+            onClicked: {
+                if (!usernameField.text || !answer1.text || 
+                    !answer2.text || !newPassword.text) {
+                    errorPopup.show("Please fill all fields")
+                    return
+                }
+                
+                var validation = authController.validate_password(newPassword.text)
+                if (!validation.length || !validation.upper || 
+                    !validation.lower || !validation.number || !validation.special) {
+                    errorPopup.show("Password doesn't meet requirements")
+                    return
+                }
+                
+                authController.reset_password(
+                    usernameField.text,
+                    newPassword.text,
+                    answer1.text,
+                    answer2.text
+                )
+            }
         }
 
         // Back Navigation
@@ -119,6 +130,14 @@ Page {
         }
     }
 
-    ErrorPopup { id: errorPopup }
+    // Add show() function to ErrorPopup reference
+    ErrorPopup {
+        id: errorPopup
+        function show(text) {
+            errorPopup.message = text
+            errorPopup.open()
+        }
+    }
+
     SuccessPopup { id: successPopup }
 }

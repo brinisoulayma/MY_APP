@@ -38,7 +38,6 @@ Page {
                 width: 24
                 height: 24
             }            
-
         }
 
         // Password Field with Visibility Toggle
@@ -76,7 +75,9 @@ Page {
                     errorPopup.show("Please fill all fields")
                     return
                 }
-                mainController.auth_controller.login(usernameField.text, passwordField.text)
+                
+                // Add password validation if needed
+                authController.login(usernameField.text, passwordField.text)
             }
         }
 
@@ -89,7 +90,10 @@ Page {
                 text: "SIGN UP"
                 flat: true
                 font.pixelSize: 14
-                onClicked: stackView.push("Signup.qml")
+                onClicked: {
+                    console.log("Navigating to signup...")
+                    navController.navigateToSignup()
+                }
             }
 
             Button {
@@ -103,4 +107,12 @@ Page {
 
     ErrorPopup { id: errorPopup }
     SuccessPopup { id: successPopup }
+
+    // Add Connections for handling login success
+    Connections {
+        target: authController
+        function onLoginSuccess(username) {  // Match exact signal name
+            stackView.replace("Home.qml", { username: username })
+        }
+    }
 }

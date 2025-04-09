@@ -41,12 +41,13 @@ Page {
             }
         }
 
-        // Password
+        // Password Field with Validation
         PasswordField {
             id: passwordField
             Layout.fillWidth: true
             leftPadding: 48
             font.pixelSize: 16
+            property bool isValid: false
             
             Image {
                 source: "qrc:/icons/lock.png"
@@ -59,9 +60,12 @@ Page {
                 height: 24
             }
 
-            // Password validation logic
             onTextChanged: {
-                var validation = mainController.auth_controller.validate_password(text)
+                var validation = mainController.auth.validate_password(text)
+                isValid = validation.length && validation.upper && 
+                        validation.lower && validation.number && validation.special
+                
+                // Update indicators
                 lengthCondition.color = validation.length ? "green" : "red"
                 upperCondition.color = validation.upper ? "green" : "red"
                 lowerCondition.color = validation.lower ? "green" : "red"
@@ -70,35 +74,54 @@ Page {
             }
         }
 
-        // Password Strength Indicators
+        // Password Requirements
         ColumnLayout {
             spacing: 4
             Layout.alignment: Qt.AlignLeft
+            visible: passwordField.text.length > 0  // Only show when typing
 
-            Text { 
-                id: lengthCondition
-                text: "✓ 8+ characters"
-                color: "red"
+            Label {
+                text: "Password must contain:"
+                font.pixelSize: 12
+                color: Material.color(Material.Grey)
             }
-            Text { 
-                id: upperCondition
-                text: "✓ Uppercase letter"
-                color: "red"
+
+            RowLayout {
+                spacing: 8
+                Text { 
+                    id: lengthCondition
+                    text: "• 8+ characters"
+                    color: "red"
+                    font.pixelSize: 12
+                }
+                Text { 
+                    id: upperCondition
+                    text: "• Uppercase"
+                    color: "red"
+                    font.pixelSize: 12
+                }
+                Text { 
+                    id: lowerCondition
+                    text: "• Lowercase"
+                    color: "red"
+                    font.pixelSize: 12
+                }
             }
-            Text { 
-                id: lowerCondition
-                text: "✓ Lowercase letter"
-                color: "red"
-            }
-            Text { 
-                id: numberCondition
-                text: "✓ Number"
-                color: "red"
-            }
-            Text { 
-                id: specialCondition
-                text: "✓ Special character"
-                color: "red"
+
+            RowLayout {
+                spacing: 8
+                Text { 
+                    id: numberCondition
+                    text: "• Number"
+                    color: "red"
+                    font.pixelSize: 12
+                }
+                Text { 
+                    id: specialCondition
+                    text: "• Special char"
+                    color: "red"
+                    font.pixelSize: 12
+                }
             }
         }
 
@@ -141,6 +164,7 @@ Page {
 
         // Create Account Button
         Button {
+            id: createAccountButton
             text: "Create Account"
             Layout.fillWidth: true
             Material.background: Material.primary
@@ -149,14 +173,24 @@ Page {
                 bold: true
                 family: "Roboto"
             }
-            onClicked: mainController.auth_controller.signup(
-                usernameField.text,
-                passwordField.text,
-                securityQuestion1.currentText,
-                answer1.text,
-                securityQuestion2.currentText,
-                answer2.text
-            )
+            enabled: passwordField.isValid && 
+                    usernameField.text.length > 0 &&
+                    answer1.text.length > 0 &&
+                    answer2.text.length > 0
+
+            opacity: enabled ? 1 : 0.6
+            Behavior on opacity { NumberAnimation { duration: 100 } }
+
+            onClicked: {
+                mainController.auth.signup( // Changed to auth
+                    usernameField.text,
+                    passwordField.text,
+                    securityQuestion1.currentText,
+                    answer1.text,
+                    securityQuestion2.currentText,
+                    answer2.text
+                )
+            }
         }
 
         // Back Navigation
@@ -171,4 +205,12 @@ Page {
 
     ErrorPopup { id: errorPopup }
     SuccessPopup { id: successPopup }
+
+    // Connections for handling errors
+    Connections {
+        target: mainController.auth // Changed to auth
+        function onErrorOccurred(message) {
+            errorPopup.show(message)
+        }
+    }
 }

@@ -23,6 +23,8 @@ class UserModel:
         self.db.execute(query)
 
     def create_user(self, username, password, q1, a1, q2, a2):
+        if self.user_exists(username):
+            return False  # Already checked in controller, but double verification
         try:
             self.db.execute('''INSERT INTO users VALUES (?,?,?,?,?,?)''',
                            (username, password, q1, a1, q2, a2))

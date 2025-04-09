@@ -21,9 +21,13 @@ if __name__ == "__main__":
     # Set Material Design configuration
     os.environ["QT_QUICK_CONTROLS_CONF"] = str(root_path / "qtquickcontrols2.conf")
     
-    # Register controller
+    # Initialize controller
     main_controller = MainController()
+    
+    # Expose controllers to QML
     engine.rootContext().setContextProperty("mainController", main_controller)
+    engine.rootContext().setContextProperty("authController", main_controller.auth)
+    engine.rootContext().setContextProperty("navController", main_controller.nav)
     
     # Set import paths
     engine.addImportPath(str(root_path / "Views"))
